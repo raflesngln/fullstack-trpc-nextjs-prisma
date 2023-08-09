@@ -5,7 +5,8 @@
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "next/babel","next/core-web-vitals"
   ],
   "parserOptions": {
     "project": "tsconfig.json",

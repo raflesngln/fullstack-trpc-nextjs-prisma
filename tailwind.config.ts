@@ -1,11 +1,12 @@
-import type { Config } from 'tailwindcss';
+import type { Config } from 'tailwindcss/types';
+// import type { Config } from 'tailwindcss';
+
 
 const config: Config = {
-  content: ['./src/pages/**/*.{js,ts,jsx,tsx}'],
+  content: ['./src/pages/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require("daisyui")],
 };
-
 export default config;
