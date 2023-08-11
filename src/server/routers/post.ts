@@ -102,4 +102,27 @@ export const postRouter = router({
       });
       return post;
     }),
+
+  deletePost: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .query(async ({ input }) => {
+
+      const { id } = input;
+
+      const post = await prisma.post.delete({
+        where: { id },
+      });
+      if (!post) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: `No post with id '${id}'`,
+        });
+      }
+      return 'postID deleted';
+    }),
+    
 });

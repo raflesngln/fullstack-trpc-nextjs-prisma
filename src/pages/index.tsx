@@ -1,4 +1,5 @@
 import { trpc } from '../utils/trpc';
+import { useRouter } from 'next/router';
 import { NextPageWithLayout } from './_app';
 import { inferProcedureInput } from '@trpc/server';
 import Link from 'next/link';
@@ -6,7 +7,11 @@ import { Fragment } from 'react';
 import type { AppRouter } from '~/server/routers/_app';
 
 const IndexPage: NextPageWithLayout = () => {
+  const router = useRouter();
   const utils = trpc.useContext();
+  // const deleteItems = trpc.post.deletePost({id:12})
+
+
   const postsQuery = trpc.post.list.useInfiniteQuery(
     {
       limit: 5,
@@ -24,6 +29,20 @@ const IndexPage: NextPageWithLayout = () => {
       await utils.post.list.invalidate();
     },
   });
+  const deletePostData=async (id:string)=>{
+    console.log('Data deleyted')
+
+    try {
+      // await axios.delete(`/api/delete?id=${post.id}`);
+      await deletePost.mutateAsync(id);
+      router.push('/'); // Redirect to the homepage after successful deletion
+    } catch (error) {
+      console.error(error);
+      // Handle error, show a notification, etc.
+    }
+    
+  }
+
 
   // prefetch all posts for instant navigation
   // useEffect(() => {
@@ -36,7 +55,8 @@ const IndexPage: NextPageWithLayout = () => {
   return (
     <div className="flex flex-col bg-gray-800 py-8">
       <h1 className="text-4xl font-bold">
-        Welcome to your tRPC with Prisma starter!
+        {/* Welcome to your tRPC with Prisma starter! */}
+        tRPC with Prisma!
       </h1>
       <p className="text-gray-400">
         If you get stuck, check{' '}
@@ -86,6 +106,12 @@ const IndexPage: NextPageWithLayout = () => {
                 <Link className="text-gray-400" href={`/post/${item.id}`}>
                   View more
                 </Link>
+                <button
+                  className="inline-block cursor-pointer rounded-md bg-gray-800 px-4 py-3 text-center text-sm font-semibold uppercase text-white transition duration-200 ease-in-out hover:bg-gray-900">
+                  Button
+                </button>
+
+                <button onClick={()=>deletePostData(item.id)}>Delete</button>
               </article>
             ))}
           </Fragment>

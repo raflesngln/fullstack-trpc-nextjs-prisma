@@ -10,7 +10,7 @@
     "dx:next": "run-s migrate-dev db-seed && next dev",
     "dx:prisma-studio": "pnpm prisma-studio",
     "dx": "run-p dx:* --print-label",
-    "dev": "next dev -p 3001",
+    "dev": "next dev -p 3000",
     "dev2": "pnpm dx:next",
     "prebuild": "run-s generate migrate",
     "build": "next build",

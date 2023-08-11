@@ -21,16 +21,43 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
-model User {
-  id    String @id @default(uuid())
-  full_name String
-  email  String
-  password  String
-  phone  String
 
-  // To return `Date`s intact through the API we use transformers
-  // https://trpc.io/docs/data-transformers
-  // This is unique so it can be used for cursor-based pagination
+model User {
+  id        String   @id @default(uuid())
+  full_name String
+  email     String
+  password  String
+  phone     String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Product {
+  id             String           @id @default(uuid())
+  name           String
+  category       String
+  description    String
+  variant        String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @default(now()) @updatedAt
+  ProductVariant ProductVariant[]
+}
+
+model Variant {
+  id             String           @id @default(uuid())
+  name           String
+  ProductVariant ProductVariant[]
+}
+
+model ProductVariant {
+  id          String   @id @default(uuid())
+  product_id  String
+  variant_id  String
+  value       String
+  price       Int
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  variant     Variant  @relation(fields: [variant_id], references: [id])
+  product     Product  @relation(fields: [product_id], references: [id])
 }
