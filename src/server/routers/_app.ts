@@ -8,6 +8,10 @@ export const appRouter = router({
   healthcheck: publicProcedure.query(() => 'yay!'),
 
   post: postRouter,
+  users: postRouter,
+  greetings: publicProcedure.query((val) => 'yay!'),
+
+  
 });
 
 export type AppRouter = typeof appRouter;

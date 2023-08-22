@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { NextPageWithLayout } from './_app';
 import { inferProcedureInput } from '@trpc/server';
 import Link from 'next/link';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import type { AppRouter } from '~/server/routers/_app';
 
 const IndexPage: NextPageWithLayout = () => {
@@ -29,19 +29,50 @@ const IndexPage: NextPageWithLayout = () => {
       await utils.post.list.invalidate();
     },
   });
-  const deletePostData=async (id:string)=>{
-    console.log('Data deleyted')
 
+
+
+  const deletePost = trpc.post.delete.useMutation(); // Create a mutation function for deleting a post
+  
+  const deletePostData = async (postId: string) => {
+    let konfirm = confirm("Press a button!\nEither OK or Cancel.");
+    let msg='';
+    if(konfirm) {
+      msg = "Deleted Data OK!";
+      try {
+        await deletePost.mutateAsync({ id: postId }); // Use the deletePost mutation function
+        await utils.post.list.invalidate();
+        console.log('Data deleted');
+        // You can optionally display a success notification here
+      } catch (error) {
+        console.error(error);
+        // Handle error, show an error notification, etc.
+      }
+    } else {
+      msg = "You canceled!";
+    }
+  };
+  
+  const updatePost = trpc.post.update.useMutation(); // Create a mutation function for updating a post
+  const [editingPostId, setEditingPostId] = useState<string | null>(null);
+  const handleEditClick = (postId: string) => {
+    setEditingPostId(postId);
+  };
+
+  const handleUpdatePost = async (
+    postId: string,
+    title: string,
+    text: string
+  ) => {
     try {
-      // await axios.delete(`/api/delete?id=${post.id}`);
-      await deletePost.mutateAsync(id);
-      router.push('/'); // Redirect to the homepage after successful deletion
+      await updatePost.mutateAsync({ id: postId, title, text }); // Use the updatePost mutation function
+      console.log('Post updated');
+      setEditingPostId(null);
     } catch (error) {
       console.error(error);
-      // Handle error, show a notification, etc.
+      // Handle error, show an error notification, etc.
     }
-    
-  }
+  };
 
 
   // prefetch all posts for instant navigation
@@ -104,12 +135,17 @@ const IndexPage: NextPageWithLayout = () => {
               <article key={item.id}>
                 <h3 className="text-2xl font-semibold">{item.title}</h3>
                 <Link className="text-gray-400" href={`/post/${item.id}`}>
-                  View more
+                  View Details
                 </Link>
+
+                <Link className="text-gray-400" href={`/post/edit/${item.id}`}>
+                
                 <button
-                  className="inline-block cursor-pointer rounded-md bg-gray-800 px-4 py-3 text-center text-sm font-semibold uppercase text-white transition duration-200 ease-in-out hover:bg-gray-900">
-                  Button
+                  className="inline-block cursor-pointer rounded-md bg-gray-800 px-4 py-3 text-center text-sm font-semibold text-white transition duration-200 ease-in-out hover:bg-gray-900">
+                  Edit
                 </button>
+                </Link>
+
 
                 <button onClick={()=>deletePostData(item.id)}>Delete</button>
               </article>

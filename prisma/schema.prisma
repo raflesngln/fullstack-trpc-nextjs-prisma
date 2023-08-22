@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "postgres"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -33,7 +33,7 @@ model User {
 }
 
 model Product {
-  id             String           @id @default(uuid())
+  id             BigInt           @id @default(autoincrement())
   name           String
   category       String
   description    String
@@ -44,15 +44,16 @@ model Product {
 }
 
 model Variant {
-  id             String           @id @default(uuid())
+  id             BigInt           @id @default(autoincrement())
   name           String
+  option_data    Json
   ProductVariant ProductVariant[]
 }
 
 model ProductVariant {
-  id          String   @id @default(uuid())
-  product_id  String
-  variant_id  String
+  id          BigInt   @id @default(autoincrement())
+  product_id  BigInt
+  variant_id  BigInt
   value       String
   price       Int
   description String

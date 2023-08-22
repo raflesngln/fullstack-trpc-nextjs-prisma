@@ -21,7 +21,7 @@ function PostItem(props: { post: PostByIdOutput }) {
 
       <p className="py-4 break-all">{post.text}</p>
 
-      <h2 className="text-2xl font-semibold py-2">Raw data Details:</h2>
+      <h2 className="text-2xl font-semibold py-2">Raw data:</h2>
       <pre className="bg-gray-900 p-4 rounded-xl overflow-x-scroll">
         {JSON.stringify(post, null, 4)}
       </pre>

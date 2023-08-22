@@ -22,7 +22,6 @@ const defaultPostSelect = Prisma.validator<Prisma.PostSelect>()({
 });
 
 export const postRouter = router({
-
   list: publicProcedure
     .input(
       z.object({
@@ -105,46 +104,28 @@ export const postRouter = router({
       });
       return post;
     }),
+    
 
-    delete: publicProcedure
+  deletePost: publicProcedure
     .input(
       z.object({
-        id: z.string().uuid(), // Assuming you want to delete by ID
+        id: z.string(),
       }),
     )
-    .mutation(async ({ input }) => {
+    .query(async ({ input }) => {
+
+      const { id } = input;
+
       const post = await prisma.post.delete({
-        where: {
-          id: input.id,
-        },
+        where: { id },
       });
-      return post;
+      if (!post) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: `No post with id '${id}'`,
+        });
+      }
+      return 'postID deleted';
     }),
-
-    update: publicProcedure
-    .input(
-      z.object({
-        id: z.string().uuid(), // Assuming you want to update by ID
-        title: z.string().min(1).max(32),
-        text: z.string().min(1),
-      }),
-    )
-    .mutation(async ({ input }) => {
-      const { id, title, text } = input;
-
-      const updatedPost = await prisma.post.update({
-        where: {
-          id,
-        },
-        data: {
-          title,
-          text,
-        },
-        select: defaultPostSelect,
-      });
-
-      return updatedPost;
-    }),
-
     
 });
